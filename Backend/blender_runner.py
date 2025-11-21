@@ -26,7 +26,7 @@ def run_blender_script(script_path: str, output_path: str) -> None:
         "-b",
         "-P", script_path,
         "--",
-        output_path,
+        output_path,    
     ]
 
     print("▶ Running Blender:")
