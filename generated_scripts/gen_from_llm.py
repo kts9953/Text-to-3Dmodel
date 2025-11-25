@@ -5,35 +5,23 @@ def build_scene():
     # 초기화: 빈 씬으로 시작
     bpy.ops.wm.read_factory_settings(use_empty=True)
     # === USER CODE START ===
-    Here is the Python code that will build a table with four legs in Blender using bpy scripting:
+    import bpy
 
-        # === USER CODE START ===
-        import math
+    def build_scene():
+    # Create a cube for the table top
+    bpy.ops.mesh.primitive_cube_add(size=2, location=(0, 0, 1))
 
-        def add_table():
-            table = bpy.data.meshes.new("Table")
-            table_obj = bpy.data.objects.new("Table", table)
+    # Create four leg cubes
+    leg_size = 0.5
+    leg_height = 2
 
-            vertices = [
-                (-0.5, -0.5, 0),
-                (0.5, -0.5, 0),
-                (0.5, 0.5, 0),
-                (-0.5, 0.5, 0)
-            ]
+    bpy.ops.mesh.primitive_cube_add(size=leg_size, location=(-1, -1, 0))
+    bpy.ops.mesh.primitive_cube_add(size=leg_size, location=(1, -1, 0))
+    bpy.ops.mesh.primitive_cube_add(size=leg_size, location=(-1, 1, 0))
+    bpy.ops.mesh.primitive_cube_add(size=leg_size, location=(1, 1, 0))
 
-            edges = [(0, 1), (1, 2), (2, 3), (3, 0)]
-
-            for v in vertices:
-                table.loops.add()
-                table.vertices.add()
-                table.loops[-1].vertex_index = table.vertices.new(*v)
-
-            for edge in edges:
-                table.edges.add()
-                table.edges[-1].vertices = [table.loops[edge[0]].vertex_index, table.loops[edge[1]].vertex_index]
-
-            table_obj.location = (0, 0, 0)
-            bpy.context.collection.objects.link(table_obj)
+    # Call the function to build the scene
+    build_scene()
     # === USER CODE END ===
 
 def main(output_path: str):

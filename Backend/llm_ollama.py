@@ -3,7 +3,7 @@ import requests
 from codegen import extract_code_from_llm_output  # 이미 너 구조에 있음
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL_NAME = "llama3:latest"
+MODEL_NAME = "qwen2.5-coder:7b"
 
 SYSTEM_PROMPT = """
 You are an expert in Blender bpy scripting.
