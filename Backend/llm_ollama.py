@@ -1,6 +1,6 @@
 # backend/llm_ollama.py
 import requests
-from codegen import extract_code_from_llm_output  # 이미 너 구조에 있음
+from codegen import extract_code_from_llm_output 
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
 MODEL_NAME = "qwen2.5-coder:7b"

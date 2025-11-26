@@ -1,34 +1,32 @@
-# Trunk
-bpy.ops.mesh.primitive_cylinder_add(
-    radius=0.15,
-    depth=2.0,
-    location=(0.0, 0.0, 1.0)
-)
-trunk = bpy.context.active_object
-trunk.name = "Tree_Trunk"
+```python# Seat
+bpy.ops.mesh.primitive_cube_add(size=1.2, location=(0.0, 0.0, 0.5))
+seat = bpy.context.active_object
+seat.scale[2] = 0.2
+seat.name = "Seat"
 
-trunk_mat = bpy.data.materials.new(name="Tree_Trunk_Mat")
-trunk_mat.use_nodes = True
-trunk_bsdf = trunk_mat.node_tree.nodes.get("Principled BSDF")
-if trunk_bsdf is not None:
-    trunk_bsdf.inputs["Base Color"].default_value = (0.25, 0.16, 0.08, 1.0)
-    trunk_bsdf.inputs["Roughness"].default_value = 0.7
-trunk.data.materials.append(trunk_mat)
+# Backrest
+bpy.ops.mesh.primitive_cube_add(size=1.0, location=(0.0, -0.45, 1.0))
+backrest = bpy.context.active_object
+backrest.scale[0] = 0.6
+backrest.scale[2] = 0.5
+backrest.name = "Backrest"
 
-# Foliage (cone)
-bpy.ops.mesh.primitive_cone_add(
-    radius1=0.9,
-    radius2=0.0,
-    depth=1.8,
-    location=(0.0, 0.0, 2.2)
-)
-foliage = bpy.context.active_object
-foliage.name = "Tree_Foliage"
+# Left leg
+bpy.ops.mesh.primitive_cylinder_add(radius=0.1, depth=0.6, location=(0.45, 0.35, 0.3))
+leg_LF = bpy.context.active_object
+leg_LF.name = "Leg_LeftFront"
 
-foliage_mat = bpy.data.materials.new(name="Tree_Foliage_Mat")
-foliage_mat.use_nodes = True
-foliage_bsdf = foliage_mat.node_tree.nodes.get("Principled BSDF")
-if foliage_bsdf is not None:
-    foliage_bsdf.inputs["Base Color"].default_value = (0.05, 0.4, 0.08, 1.0)
-    foliage_bsdf.inputs["Roughness"].default_value = 0.5
-foliage.data.materials.append(foliage_mat)
+# Right leg
+bpy.ops.mesh.primitive_cylinder_add(radius=0.1, depth=0.6, location=(-0.45, 0.35, 0.3))
+leg_RF = bpy.context.active_object
+leg_RF.name = "Leg_RightFront"
+
+# Left back leg
+bpy.ops.mesh.primitive_cylinder_add(radius=0.1, depth=0.6, location=(0.45, -0.35, 0.3))
+leg_LB = bpy.context.active_object
+leg_LB.name = "Leg_LeftBack"
+
+# Right back leg
+bpy.ops.mesh.primitive_cylinder_add(radius=0.1, depth=0.6, location=(-0.45, -0.35, 0.3))
+leg_RB = bpy.context.active_object
+leg_RB.name = "Leg_RightBack"```

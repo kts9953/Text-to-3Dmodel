@@ -53,13 +53,21 @@ def save_script(full_script: str, scripts_dir: str | Path, basename: str) -> Pat
 
 def extract_code_from_llm_output(text: str) -> str:
     """
-    나중에 LLM 붙일 때 사용.
-    ```python ... ``` 블록 안 코드만 뽑아냄.
+    LLM 응답에서 ```python ... ``` 블록 안 코드만 뽑아냄.
+    프롬프트에서 '반드시 하나의 python 코드블럭만 사용'한다고 가정.
     """
     fence_pattern = r"```(?:python)?\s*(.*?)```"
-    m = re.search(fence_pattern, text, re.DOTALL | re.IGNORECASE)
-    if m:
-        code = m.group(1)
-    else:
-        code = text
-    return code.strip()
+    matches = re.findall(fence_pattern, text, re.DOTALL | re.IGNORECASE)
+
+    if not matches:
+        # 프롬프트 계약이 깨진 경우 -> 여기서 바로 에러 내고 상위에서 처리
+        raise ValueError("LLM output does not contain a ```python ... ``` code block.")
+
+    # 혹시 공백 블럭이 섞여 있어도, 첫 번째 non-empty 블럭을 쓰도록 방어
+    for code in matches:
+        stripped = code.strip()
+        if stripped:
+            return stripped
+
+    # 전부 공백이면 그냥 첫 번째라도 반환
+    return matches[0].strip()

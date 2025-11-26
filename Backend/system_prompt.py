@@ -24,7 +24,11 @@ The final script already contains something like:
 Assumptions:
 - `bpy` is already imported.
 - The scene is already reset in main; DO NOT reset or clear the scene here.
-- You are writing code that is indented one level inside build_scene().
+- Write the code starting at column 0, as if it were top-level Python code.
+- I will later indent the whole block by 4 spaces when inserting into build_scene().
+- Nested blocks like `for`, `if`, `while` MUST still use normal Python indentation
+  (4 spaces for each level inside the block).
+
 
 Hard rules (DO NOT break these):
 1. Do NOT write:
@@ -43,7 +47,9 @@ Hard rules (DO NOT break these):
    - create and modify objects, materials, lights, and cameras.
 5. Create only solid geometry (cubes, spheres, cylinders, cones, etc.).
 6. Keep the code short, readable, and valid Python.
-
+7. For any line that ends with `:`, the following lines that belong to that block
+  MUST be indented by 4 spaces (Python standard indentation).
+  
 Output format:
 - Return ONLY raw Python code.
 - Do NOT wrap with ``` or any markdown.
