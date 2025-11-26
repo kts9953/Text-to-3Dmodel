@@ -2,7 +2,7 @@ from pathlib import Path
 from llm_gpt import generate_user_code
 from codegen import build_full_script_from_user_code, save_script
 from blender_runner import run_blender_script
-import time
+from datetime import datetime
 
 BASE = Path(__file__).resolve().parent.parent
 SCRIPTS_DIR = BASE / "generated_scripts"
@@ -24,7 +24,7 @@ def main():
     full_script = build_full_script_from_user_code(user_code)
 
     # 3) .py 파일로 저장
-    timestamp = int(time.time())
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     script_path = save_script(full_script, SCRIPTS_DIR, f"gen_{timestamp}")
     print("[MiniServer] Script saved:", script_path)
 
