@@ -1,6 +1,5 @@
 from openai import OpenAI
-from system_prompt_codeblock import SYSTEM_PROMPT
-from codegen import extract_code_from_llm_output
+from system_prompt_comp import SYSTEM_PROMPT
 import os
 
 client = OpenAI()
@@ -13,7 +12,7 @@ def generate_user_code(prompt :str) -> str:
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": prompt}
     ],
-    temperature=0.5)
+    temperature=0.3)
     
     full_text = response.choices[0].message.content
     
