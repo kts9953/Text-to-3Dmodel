@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- html : 문서 전체를 감싸는 태그 -->
+
+<head> <!-- head : 화면에 보이지 않는 부분 -->
+    <meta charset="UTF-8"> <!-- 문자 인코딩 설정 (utf-8은 한글이 깨지지 않도록 설정함.)-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blender 테스트</title> <!-- 문서 제목(브라우저 탭에 표시됨.) -->
+
+    <style>
+        body {
+            background-color: #707070; /* 연한 회색 코드 (원하는 색으로 변경 가능) */
+            /* 텍스트를 가운데 정렬하면 더 보기 좋습니다 */
+            text-align: center; 
+            font-family: sans-serif;
+        }
+
+        model-viewer {
+            
+            margin: 30px auto;     /* 위아래 30px 여백, 좌우는 자동(중앙 정렬) */
+            width: 80%;            /* 너비는 화면의 80% */
+            max-width: 300px;      /* 너무 커지지 않게 최대 너비 제한 */
+            height: 500px;         /* 높이 고정 */
+            background-color: #707070; /* 모델 뷰어 자체 배경색 (구별되게) */
+            
+        }
+    </style>
+
+</head>
+
+<body><!-- body : 화면에 보이는 부분 -->
+    <h1>TEXT TO BLENDER</h1> <!-- h1 : HTML에서 가장 큰 제목 -->
+    <form action="/make_cube" method="post">
+
+    <!-- form : 사용자 입력을 받는 폼 -->
+    <input type="text" name="prompt" placeholder="예: 3단 눈사람 만들어줘" required>
+    <button type="submit">생성하기</button>
+</form>
+
+    
+<!-- model-viewer 라이브러리 불러오기 -->
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+<!-- model-viewer 태그를 사용하여 3D 모델을 표시 -->
+<model-viewer src="/model_file/generated_model.glb" auto-rotate camera-controls></model-viewer>
+
+
+</body>
+</html>
+
+<!-- get : 웹주소로 요청,
+     post: 데이터를 담아서 보내는 요청-->
