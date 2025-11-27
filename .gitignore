@@ -15,3 +15,16 @@ generated_models/
 
 # Debug / temp scripts
 GPT5_scripts/
+
+# Python
+__pycache__/
+*.pyc
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# OS
+.DS_Store
+Thumbs.db
