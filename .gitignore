@@ -1,0 +1,17 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual env
+.venv/
+
+# VS Code settings
+.vscode/
+
+# Generated scenes & models
+generated_scripts/
+generated_models/
+
+# Debug / temp scripts
+GPT5_scripts/
