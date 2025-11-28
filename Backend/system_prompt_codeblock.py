@@ -1,3 +1,8 @@
+"""
+llm 출력을  ```python
+``` 안에 받는 프롬프트 
+구버전
+"""
 SYSTEM_PROMPT = """\
 You are an expert in Blender bpy scripting.
 

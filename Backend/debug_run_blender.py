@@ -1,4 +1,6 @@
-# backend/debug_run_blender.py
+"""
+예제 스크립트로 블렌더 러너 테스트 
+"""
 from pathlib import Path
 from blender_runner import run_blender_script
 

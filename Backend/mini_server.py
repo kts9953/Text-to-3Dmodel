@@ -1,4 +1,6 @@
-# Backend/mini_server.py
+"""
+ollama 사용하는 전체 파이프라인 테스트
+"""
 from pathlib import Path
 from llm_ollama import generate_user_code
 from codegen import build_full_script_from_user_code, save_script

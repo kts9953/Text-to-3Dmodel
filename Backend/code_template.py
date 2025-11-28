@@ -1,5 +1,6 @@
-# Backend/code_template.py
-
+"""
+llm출력을 끼워넣을 베이스 템플릿
+"""
 BASE_TEMPLATE = """\
 import bpy
 import sys

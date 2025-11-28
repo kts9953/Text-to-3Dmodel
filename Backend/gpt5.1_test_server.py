@@ -1,4 +1,6 @@
-
+"""
+GPT5.1 UI에 프롬프트 넣고 받은 출력으로 테스트
+"""
 from pathlib import Path
 from llm_ollama import generate_user_code
 from codegen import build_full_script_from_user_code, save_script

@@ -1,50 +1,263 @@
 <!DOCTYPE html>
-<html lang="en"> <!-- html : 문서 전체를 감싸는 태그 -->
-
-<head> <!-- head : 화면에 보이지 않는 부분 -->
-    <meta charset="UTF-8"> <!-- 문자 인코딩 설정 (utf-8은 한글이 깨지지 않도록 설정함.)-->
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blender 테스트</title> <!-- 문서 제목(브라우저 탭에 표시됨.) -->
-
+    <title>AI 3D Model Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        body {
-            background-color: #707070; /* 연한 회색 코드 (원하는 색으로 변경 가능) */
-            /* 텍스트를 가운데 정렬하면 더 보기 좋습니다 */
-            text-align: center; 
-            font-family: sans-serif;
+        :root {
+            --primary-color: #e08b28; /* 블렌더 오렌지색 포인트 */
+            --bg-gradient: linear-gradient(135deg, #2b32b2 10%, #1488cc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #111; /* 아주 어두운 배경 */
+            color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* 전체 컨테이너 */
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            height: 80vh;
+            background: #1e1e1e; /* 블렌더 UI 색상 */
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: row; /* 가로 배치 */
+            overflow: hidden;
+        }
+
+        /* 왼쪽: 컨트롤 패널 */
+        .left-panel {
+            width: 40%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid #333;
+        }
+
+        /* 오른쪽: 3D 뷰어 영역 */
+        .right-panel {
+            width: 60%;
+            background: radial-gradient(circle at center, #2a2a2a 0%, #000 100%);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #aaa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        /* 입력 폼 스타일 */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            padding-right: 60px; /* 버튼 공간 확보 */
+            background: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+            box-sizing: border-box; 
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(224, 139, 40, 0.3);
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #ff9f43;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* 모델 뷰어 스타일 */
         model-viewer {
-            
-            margin: 30px auto;     /* 위아래 30px 여백, 좌우는 자동(중앙 정렬) */
-            width: 80%;            /* 너비는 화면의 80% */
-            max-width: 300px;      /* 너무 커지지 않게 최대 너비 제한 */
-            height: 500px;         /* 높이 고정 */
-            background-color: #707070; /* 모델 뷰어 자체 배경색 (구별되게) */
-            
+            width: 100%;
+            height: 100%;
+            --poster-color: transparent;
+        }
+
+        /* 로딩 스피너 (평소엔 숨김) */
+        .loading-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none; /* JS로 제어 */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #333;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: 95vh;
+            }
+            .left-panel, .right-panel {
+                width: 100%;
+                height: 50%;
+            }
+            .left-panel {
+                padding: 20px;
+            }
         }
     </style>
-
 </head>
+<body>
 
-<body><!-- body : 화면에 보이는 부분 -->
-    <h1>TEXT TO BLENDER</h1> <!-- h1 : HTML에서 가장 큰 제목 -->
-    <form action="/make_cube" method="post">
+    <div class="container">
+        <div class="left-panel">
+            <h1>Text to Blender</h1>
+            <p class="subtitle">상상하는 무엇이든 3D로 만들어 드립니다.</p>
 
-    <!-- form : 사용자 입력을 받는 폼 -->
-    <input type="text" name="prompt" placeholder="예: 3단 눈사람 만들어줘" required>
-    <button type="submit">생성하기</button>
-</form>
+            <form id="gen-form" onsubmit="generateModel(event)">
+                <div class="input-group">
+                    <input type="text" id="prompt" name="prompt" placeholder="예: 의자를 만들어줘" required autocomplete="off">
+                </div>
+                <button type="submit" id="submit-btn">✨ 생성하기</button>
+            </form>
 
-    
-<!-- model-viewer 라이브러리 불러오기 -->
-<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-<!-- model-viewer 태그를 사용하여 3D 모델을 표시 -->
-<model-viewer src="/model_file/generated_model.glb" auto-rotate camera-controls></model-viewer>
+            <div style="margin-top: 30px; color: #555; font-size: 0.9rem;">
+                <p>💡 Tip: "Make a chair with 4 legs" 처럼<br>영어로 입력하면 더 정확합니다.</p>
+            </div>
+        </div>
 
+        <div class="right-panel">
+            <div id="loading" class="loading-overlay">
+                <div class="spinner"></div>
+                <p>AI가 모델링 중입니다...<br>(약 10~20초 소요)</p>
+            </div>
 
+            <model-viewer 
+                id="viewer"
+                src="/model_file/generated_model.glb" 
+                alt="AI Generated 3D Model" 
+                auto-rotate 
+                camera-controls 
+                shadow-intensity="1"
+                environment-image="neutral">
+            </model-viewer>
+        </div>
+    </div>
+
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+    <script>
+        async function generateModel(event) {
+            event.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+
+            const promptInput = document.getElementById('prompt');
+            const promptVal = promptInput.value;
+            const loading = document.getElementById('loading');
+            const viewer = document.getElementById('viewer');
+            const btn = document.getElementById('submit-btn');
+
+            // 1. 로딩 시작
+            loading.style.display = 'flex';
+            btn.disabled = true;
+            btn.innerText = "🚧 생성 중...";
+
+            // 2. 서버로 데이터 전송 (AJAX)
+            try {
+                // Form 데이터 만들기
+                const formData = new FormData();
+                formData.append('prompt', promptVal);
+
+                // 서버에 POST 요청
+                const response = await fetch('/make_cube', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    // 3. 성공 시 모델 뷰어 갱신
+                    // src 뒤에 ?t=시간 을 붙여서 브라우저가 새 파일로 인식하게 함(캐시 방지)
+                    const timestamp = new Date().getTime();
+                    viewer.src = `/model_file/generated_model.glb?t=${timestamp}`;
+                    
+                    console.log("모델 갱신 완료!");
+                } else {
+                    alert("생성에 실패했습니다. 다시 시도해주세요.");
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("서버 연결 오류가 발생했습니다.");
+            } finally {
+                // 4. 로딩 끝
+                loading.style.display = 'none';
+                btn.disabled = false;
+                btn.innerText = "✨ 생성하기";
+            }
+        }
+    </script>
 </body>
 </html>
-
-<!-- get : 웹주소로 요청,
-     post: 데이터를 담아서 보내는 요청-->

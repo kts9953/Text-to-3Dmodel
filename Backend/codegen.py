@@ -1,4 +1,6 @@
-# Backend/codegen.py
+"""
+llm출력 들여쓰기 정규화, 들여쓰기, python 코드만 추출, BASE_TEMPLATE에 끼워넣기, 생성된 스크립트 경로에 저장
+"""
 from pathlib import Path
 import re
 from code_template import BASE_TEMPLATE
@@ -10,14 +12,6 @@ def normalize_indentation(user_code: str) -> str:
     모든 줄의 공통 최소 들여쓰기를 제거함.
     """
     code = textwrap.dedent(user_code)
-
-    # 2. 모든 줄 왼쪽 공백 제거(완전 평탄화)
-    # lines = []
-    #for line in code.splitlines():
-    #    if line.strip() == "":
-    #        lines.append("")  # 빈 줄은 유지
-    #    else:
-    #        lines.append(line.lstrip())
 
     return code.strip("\n")
 

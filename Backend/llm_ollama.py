@@ -1,4 +1,7 @@
-# backend/llm_ollama.py
+"""
+사용자 입력 ollama 사용해서 출력 반환
+현 버전에서 사용하지 않음
+"""
 import requests
 from codegen import extract_code_from_llm_output 
 

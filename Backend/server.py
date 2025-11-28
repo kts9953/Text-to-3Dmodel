@@ -1,3 +1,6 @@
+"""
+실제 서버
+"""
 import sys
 import os
 from flask import Flask, render_template, send_from_directory, request

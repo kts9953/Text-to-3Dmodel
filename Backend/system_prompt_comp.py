@@ -1,3 +1,50 @@
+"""
+[파일 개요]
+- 이 파일은 **현재 파이프라인에서 실제로 사용하는 메인 시스템 프롬프트**다.
+- 목적: LLM이 사용자의 자연어 설명을 보고,
+  `build_scene()` 함수 안에 들어갈 **bpy 기반 씬 구성 코드만** 생성하도록 강하게 유도하는 것.
+- 응답 형식: 반드시 **하나의 ```python ... ``` 코드블럭** 안에만 코드를 반환하도록 요구한다.
+
+[다른 프롬프트들과의 관계]
+- system_prompt.py
+  - 마크다운 코드블럭 없이 **raw Python 코드 문자열**을 받는 초기 버전.
+- system_prompt_codeblock.py
+  - 코드블럭 버전이지만, 좌표/치수/정렬 제약이 매우 빡센 프롬프트.
+- system_prompt_loose.py
+  - 제약을 많이 풀어둔 느슨한버전. 테스트나 비교용으로 사용.
+- system_prompt_comp.py (이 파일)
+  - 실제 사용 기준:
+    - **복잡한 오브젝트**(의자, 책상, 나무, 로봇 등)를
+      여러 primitive로 나눠 만드는 걸 권장하면서도
+      너무 하드코딩된 제약은 피하도록 했음.
+
+[설계 포인트]
+- 복잡한 오브젝트를 다음처럼 **여러 파트로 분해하는 걸 기본 전략으로 삼는다**:
+  - Chair: seat / legs / backrest / (optional) armrests
+  - Table: tabletop / legs or base
+  - Tree: trunk / foliage volumes
+  - Car: body / wheels / windows(블록 형태)
+- 각 파트는 별도 primitive로 만들고, 이름도 prefix로 묶어서 관리:
+  - 예: Chair_Seat, Chair_Leg, Chair_Back, Chair_Arm / Table_Top, Table_Leg …
+- 위치/정렬은 너무 빡세게 제한하진 않지만,
+  - 하나의 main reference part(의자면 seat, 테이블이면 tabletop 등)를 기준으로
+  - 나머지 파트들을 **대략 붙어 보이게** 배치하는 가이드를 준다.
+- 이 프롬프트가 담당하는 건 **씬 구성까지**:
+  - 오브젝트/머티리얼/라이트/카메라 생성·배치까지만 허용.
+  - 씬 초기화, 파일 저장/Export(GLB, PNG 등), sys.argv 처리 등은
+    다른 코드(템플릿, blender_runner 등)가 책임진다.
+
+[수정 시 주의사항]
+- Hard rules, Output format 섹션은 백엔드 파서/후처리 코드와 직접 연결될 가능성이 크다.
+  - 특히 "EXACTLY ONE markdown code block using the python language tag" 부분은
+    응답 파싱 로직이 전제하고 있을 수 있으므로 가능하면 건드리지 말 것.
+- Level of detail / Object complexity 설명은
+  - 필요하면 숫자(예: 4–12 primitives)를 조정할 수 있지만,
+  - 이 값을 바꾸면 LLM이 만들어내는 씬의 디폴트 복잡도도 같이 달라진다는 점만 인지하고 수정할 것.
+- import / 파일 I/O / main guard 금지 규칙은
+  - 전체 파이프라인의 안정성과 보안(임의 코드 실행 범위)을 지키는 핵심 제약이므로 유지하는 게 좋다.
+"""
+
 SYSTEM_PROMPT = """\
 You are an expert in Blender bpy scripting.
 

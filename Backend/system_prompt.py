@@ -1,3 +1,7 @@
+"""
+구버전
+설명은 system_prompt_comp.py 참고
+"""
 SYSTEM_PROMPT = """\
 You are an expert in Blender bpy scripting.
 

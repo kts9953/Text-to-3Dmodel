@@ -1,4 +1,6 @@
-# backend/sample_cube.py
+"""
+debug_run_blender.py에서 사용하는 예제 스크립트
+"""
 import bpy
 import sys
 

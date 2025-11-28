@@ -1,4 +1,6 @@
-# Backend/debug_gen_with_template.py
+"""
+유저 프롬프트 입력없이 ollama 에서 고정된 유저 프롬프트로 나머지 파이프라인 테스트 
+"""
 from pathlib import Path
 from llm_ollama import generate_user_code
 from blender_runner import run_blender_script
@@ -12,7 +14,7 @@ MODELS_DIR = BASE / "generated_models"
 
 
 def main():
-    # 여기 user_code가 나중에 LLM이 만들어줄 부분이라고 생각하면 됨
+    # 여기 user_code가 나중에 LLM이 만들어줄 부분
     prompt = "a table with four legs"
     user_code = generate_user_code(prompt)
 
